@@ -1,2 +1,0 @@
-# yoshapp
-aplikasi gabut

@@ -41,11 +41,11 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const chatRef = db.ref("chat");
 
-// 🔹 Ambil Nama Pengguna dari localStorage
-let username = localStorage.getItem("username");
+// 🔹 Pastikan username terdefinisi lebih awal
+let username = localStorage.getItem("username") || "";
 
 // 🔹 Cek apakah username sudah ada saat halaman dimuat
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     if (username) {
         document.getElementById("usernameContainer").style.display = "none";
         document.querySelector(".chat-container").style.display = "block";
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
 // 🔹 Simpan Nama Pengguna
 function setUsername() {
     let inputName = document.getElementById("usernameInput").value.trim();
-    
+
     if (inputName !== "") {
         localStorage.setItem("username", inputName);
         username = inputName;
@@ -71,8 +71,8 @@ function setUsername() {
 // 🔹 Kirim Pesan ke Firebase
 function sendMessage() {
     let message = document.getElementById("messageInput").value.trim();
-    
-    if (message !== "") {
+
+    if (message !== "" && username) {
         chatRef.push({ text: message, sender: username });
         document.getElementById("messageInput").value = "";
     }
@@ -95,9 +95,8 @@ chatRef.on("child_added", (snapshot) => {
 
     chatDiv.appendChild(messageBubble);
     chatDiv.scrollTop = chatDiv.scrollHeight;
+});
 
-
-        });
     </script>
 </body>
 </html>

@@ -9,31 +9,6 @@ body {
     margin: 0;
 }
 
-/* Form Nama */
-#usernameContainer {
-    text-align: center;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-#usernameInput {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-#usernameContainer button {
-    background: #25d366;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-/* Chat Box */
 .chat-container {
     width: 350px;
     background: white;

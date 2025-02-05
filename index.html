@@ -27,66 +27,76 @@
     </div>
 
     <script>
-        // 🔥 Konfigurasi Firebase (Ganti dengan Firebase kamu)
-        const firebaseConfig = {
-            apiKey: "AIzaSyBLNjtXMy0TJdqnObUClr-ntb3mNP_W7Og",
-            authDomain: "mysapp-abbc2.firebaseapp.com",
-            databaseURL: "https://mysapp-abbc2-default-rtdb.firebaseio.com",
-            projectId: "mysapp-abbc2",
-            storageBucket: "mysapp-abbc2.firebasestorage.app",
-            messagingSenderId: "583821601937",
-            appId: "1:583821601937:web:fd324f6785c503fb422330"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const chatRef = db.ref("chat");
+        // 🔥 Konfigurasi Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyBLNjtXMy0TJdqnObUClr-ntb3mNP_W7Og",
+    authDomain: "mysapp-abbc2.firebaseapp.com",
+    databaseURL: "https://mysapp-abbc2-default-rtdb.firebaseio.com",
+    projectId: "mysapp-abbc2",
+    storageBucket: "mysapp-abbc2.firebasestorage.app",
+    messagingSenderId: "583821601937",
+    appId: "1:583821601937:web:fd324f6785c503fb422330"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const chatRef = db.ref("chat");
 
-        let username = localStorage.getItem("username");
+// ✅ Pastikan username sudah dideklarasikan
+let username = localStorage.getItem("username") || "";
 
-        // 🔹 Simpan Nama Pengguna
-        function setUsername() {
-            let inputName = document.getElementById("usernameInput").value;
-            if (inputName.trim() !== "") {
-                localStorage.setItem("username", inputName);
-                username = inputName;
-                document.getElementById("usernameContainer").style.display = "none";
-                document.querySelector(".chat-container").style.display = "block";
-            }
-        }
+// 🔹 Cek apakah username sudah ada saat halaman dimuat
+document.addEventListener("DOMContentLoaded", function () {
+    if (username) {
+        document.getElementById("usernameContainer").style.display = "none";
+        document.querySelector(".chat-container").style.display = "block";
+    }
+});
 
-        // 🔹 Jika Nama Sudah Ada, Langsung Masuk ke Chat
-        if (username) {
-            document.getElementById("usernameContainer").style.display = "none";
-            document.querySelector(".chat-container").style.display = "block";
-        }
+// 🔹 Simpan Nama Pengguna
+function setUsername() {
+    let inputName = document.getElementById("usernameInput").value.trim();
 
-        // 🔹 Kirim Pesan ke Firebase
-        function sendMessage() {
-            let message = document.getElementById("messageInput").value;
-            if (message.trim() !== "") {
-                chatRef.push({ text: message, sender: username });
-                document.getElementById("messageInput").value = "";
-            }
-        }
+    if (inputName !== "") {
+        localStorage.setItem("username", inputName);
+        username = inputName; // ✅ Variabel username harus sudah ada sebelumnya!
 
-        // 🔹 Tampilkan Chat dari Firebase
-        chatRef.on("child_added", (snapshot) => {
-            let msgData = snapshot.val();
-            let chatDiv = document.getElementById("chat");
+        // Sembunyikan form nama, tampilkan chat
+        document.getElementById("usernameContainer").style.display = "none";
+        document.querySelector(".chat-container").style.display = "block";
+    } else {
+        alert("Nama tidak boleh kosong!");
+    }
+}
 
-            let messageBubble = document.createElement("div");
-            messageBubble.classList.add("message");
-            messageBubble.innerHTML = `<strong>${msgData.sender}:</strong> ${msgData.text}`;
+// 🔹 Kirim Pesan ke Firebase
+function sendMessage() {
+    let message = document.getElementById("messageInput").value.trim();
 
-            if (msgData.sender === username) {
-                messageBubble.classList.add("sent");
-            } else {
-                messageBubble.classList.add("received");
-            }
+    if (message !== "" && username) {
+        chatRef.push({ text: message, sender: username });
+        document.getElementById("messageInput").value = "";
+    }
+}
 
-            chatDiv.appendChild(messageBubble);
-            chatDiv.scrollTop = chatDiv.scrollHeight;
-        });
+// 🔹 Tampilkan Chat dari Firebase
+chatRef.on("child_added", (snapshot) => {
+    let msgData = snapshot.val();
+    let chatDiv = document.getElementById("chat");
+
+    let messageBubble = document.createElement("div");
+    messageBubble.classList.add("message");
+    messageBubble.innerHTML = `<strong>${msgData.sender}:</strong> ${msgData.text}`;
+
+    if (msgData.sender === username) {
+        messageBubble.classList.add("sent");
+    } else {
+        messageBubble.classList.add("received");
+    }
+
+    chatDiv.appendChild(messageBubble);
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+});
+
     </script>
 </body>
 </html>
